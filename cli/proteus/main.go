@@ -3,21 +3,30 @@ package main
 import (
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
 
-	"gopkg.in/src-d/proteus.v1"
-	"gopkg.in/src-d/proteus.v1/protobuf"
-	"gopkg.in/src-d/proteus.v1/report"
+	"github.com/zimbabao/proteus"
+	"github.com/zimbabao/proteus/protobuf"
+	"github.com/zimbabao/proteus/report"
 
-	"gopkg.in/urfave/cli.v1"
+	//	"gopkg.in/urfave/cli.v1"
+	"github.com/urfave/cli"
 )
 
 var (
 	packages cli.StringSlice
 	path     string
+	source   string
 	verbose  bool
+)
+
+var (
+	goPath      string
+	goSrc       string //= filepath.Join(os.Getenv("GOPATH"), "src")
+	protobufSrc string // = filepath.Join(goSrc, "github.com", "gogo", "protobuf")
 )
 
 func main() {
@@ -45,7 +54,12 @@ func main() {
 		Destination: &path,
 	}
 
-	app.Flags = append(baseFlags, folderFlag)
+	sourceFlag := cli.StringFlag{
+		Name:        "sourcePath, s",
+		Usage:       "folder containing the source",
+		Destination: &source,
+	}
+	app.Flags = append(baseFlags, folderFlag, sourceFlag)
 	app.Commands = []cli.Command{
 		{
 			Name:        "proto",
@@ -63,6 +77,17 @@ func main() {
 		},
 	}
 	app.Action = initCmd(genAll)
+
+	// Init GoPaths
+	goPath := os.Getenv("GOPATH")
+	if goPath == "" {
+		goPath = filepath.Join(os.Getenv("HOME"), "go")
+		// Since lots of code depends on this setting it here
+		// TODO (zimbabao): Remove dependecy on GOPATH
+		os.Setenv("GOPATH", goPath)
+	}
+	goSrc = filepath.Join(goPath, "src")
+	protobufSrc = filepath.Join(goSrc, "github.com", "gogo", "protobuf")
 
 	if err := app.Run(os.Args); err != nil {
 		fmt.Println(err)
@@ -96,19 +121,19 @@ func genProtos(c *cli.Context) error {
 	}
 
 	return proteus.GenerateProtos(proteus.Options{
-		BasePath: path,
-		Packages: packages,
+		SourcePath: source,
+		BasePath:   path,
+		Packages:   packages,
 	})
 }
 
 func genRPCServer(c *cli.Context) error {
-	return proteus.GenerateRPCServer(packages)
+	return proteus.GenerateRPCServer(proteus.Options{
+		SourcePath: source,
+		BasePath:   path,
+		Packages:   packages,
+	})
 }
-
-var (
-	goSrc       = filepath.Join(os.Getenv("GOPATH"), "src")
-	protobufSrc = filepath.Join(goSrc, "github.com", "gogo", "protobuf")
-)
 
 func genAll(c *cli.Context) error {
 	protocPath, err := exec.LookPath("protoc")
@@ -116,6 +141,7 @@ func genAll(c *cli.Context) error {
 		return fmt.Errorf("protoc is not installed: %s", err)
 	}
 
+	log.Printf("Protobuf file name: %v", protobufSrc)
 	if err := checkFolder(protobufSrc); err != nil {
 		return fmt.Errorf("github.com/gogo/protobuf is not installed")
 	}

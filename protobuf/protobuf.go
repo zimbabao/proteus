@@ -6,7 +6,7 @@ import (
 	"sort"
 	"strings"
 
-	"gopkg.in/src-d/proteus.v1/scanner"
+	"github.com/zimbabao/proteus/scanner"
 )
 
 // Package represents an unique .proto file with its own package definition.

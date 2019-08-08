@@ -10,12 +10,12 @@ import (
 	"strings"
 	"sync"
 
-	"gopkg.in/src-d/proteus.v1/report"
+	"github.com/zimbabao/proteus/report"
 
-	"gopkg.in/src-d/go-parse-utils.v1"
+	parseutil "gopkg.in/src-d/go-parse-utils.v1"
 )
 
-var goPath = os.Getenv("GOPATH")
+var goPath string
 
 // Scanner scans packages looking for Go source files to parse
 // and extract types and structs from.
@@ -30,13 +30,13 @@ var ErrNoGoPathSet = errors.New("GOPATH environment variable is not set")
 
 // New creates a new Scanner that will look for types and structs
 // only in the given packages.
-func New(packages ...string) (*Scanner, error) {
-	if goPath == "" {
-		return nil, ErrNoGoPathSet
-	}
+func New(srcPath string, packages ...string) (*Scanner, error) {
+	// if goPath == "" {
+	// 	return nil, ErrNoGoPathSet
+	// }
 
 	for _, pkg := range packages {
-		p := filepath.Join(goPath, "src", pkg)
+		p := filepath.Join(srcPath, pkg)
 		fi, err := os.Stat(p)
 		switch {
 		case err != nil:
