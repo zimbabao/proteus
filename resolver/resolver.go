@@ -1,4 +1,4 @@
-package resolver // import "gopkg.in/src-d/proteus.v1/resolver"
+package resolver // import "github.com/zimbabao/proteus/resolver"
 
 import (
 	"fmt"

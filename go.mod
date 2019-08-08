@@ -17,5 +17,4 @@ require (
 	golang.org/x/text v0.3.2
 	golang.org/x/tools v0.0.0-20190807223507-b346f7fd45de // indirect
 	google.golang.org/grpc v1.22.1
-	gopkg.in/src-d/proteus.v1 v1.3.3
 )

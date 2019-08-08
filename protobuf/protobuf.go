@@ -1,4 +1,4 @@
-package protobuf // import "gopkg.in/src-d/proteus.v1/protobuf"
+package protobuf // import "github.com/zimbabao/proteus/protobuf"
 
 import (
 	"fmt"
