@@ -6,7 +6,7 @@ import (
 	"go/token"
 	"strings"
 
-	"gopkg.in/src-d/go-parse-utils.v1"
+	parseutil "github.com/zimbabao/go-parse-utils"
 )
 
 // context holds all the scanning context of a single package. Contains all

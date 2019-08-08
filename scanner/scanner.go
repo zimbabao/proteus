@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"go/types"
+	"log"
 	"os"
 	"path/filepath"
 	"sort"
@@ -12,7 +13,7 @@ import (
 
 	"github.com/zimbabao/proteus/report"
 
-	parseutil "gopkg.in/src-d/go-parse-utils.v1"
+	parseutil "github.com/zimbabao/go-parse-utils"
 )
 
 var goPath string
@@ -35,11 +36,13 @@ func New(srcPath string, packages ...string) (*Scanner, error) {
 	// 	return nil, ErrNoGoPathSet
 	// }
 
+	log.Printf("New Source is: %s", srcPath)
 	for _, pkg := range packages {
 		p := filepath.Join(srcPath, pkg)
 		fi, err := os.Stat(p)
 		switch {
 		case err != nil:
+			log.Printf("Errors in the file stating %s", p)
 			return nil, err
 		case !fi.IsDir():
 			return nil, fmt.Errorf("path is not directory: %s", p)

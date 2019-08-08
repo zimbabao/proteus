@@ -12,7 +12,7 @@ import (
 	"github.com/zimbabao/proteus/protobuf"
 	"github.com/zimbabao/proteus/report"
 
-	parseutil "gopkg.in/src-d/go-parse-utils.v1"
+	parseutil "github.com/zimbabao/go-parse-utils"
 )
 
 // Generator generates implementations of an RPC server for a package.
