@@ -10,6 +10,8 @@ import (
 	"github.com/zimbabao/proteus/report"
 )
 
+// Added a test comment here
+
 // Generator is in charge of generating the .proto files and write them
 // to disk in a file at the given path.
 type Generator struct {
